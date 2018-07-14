@@ -407,9 +407,19 @@ rm /var/www/html/index.html
 echo "${OK}"
 }
 
+function finishup() {
+	OLDIFACE=$(grep 'virtual network' net.pl)
+	INTERFACES=$(netstat -i|grep -Ev "^Iface|^Kernel|^lo"|cut -d' ' -f1)
+	echo -e "System Interfaces:\n${INTERFACES}"
+	echo "Currently Graphing: ${OLDIFACE}"
+	read -p "What interface will you be Graphing? " answer
+	sed -i 's/wlp3s0/'"$answer"'/' net.pl
+}
+
 OK=$(echo -e "[ \e[0;32mDONE\e[00m ]")
 config
 net.pl
 mem.pl
 cpu.pl
 index.pl
+finishup

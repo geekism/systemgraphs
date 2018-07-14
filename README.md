@@ -121,3 +121,9 @@ Save and issue: chown -R www-data.www-data .
 Wait 1 hour and check to see if the graphs are updating
 
 
+Or... you can just run
+
+	install.sh
+
+Answer the Only Question, and it'll be ready to go.
+
