@@ -1,0 +1,4 @@
+/var/www/html/net.pl >/dev/null 2>&1
+/var/www/html/cpu.pl >/dev/null 2>&1
+/var/www/html/mem.pl >/dev/null 2>&1
+

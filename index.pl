@@ -1,38 +1,36 @@
-#!/usr/bin/perl
-my @graphs;
-my ($name, $descr);
-push (@graphs, "venet0");
-my $svrname = $ENV{'SERVER_NAME'};
+#!/usr/bin/perl -w
+# black (black@justla.me)
+# https://justla.me/
 
+use warnings;
+
+my @graphs;
+my ($name, $descr, $type, $interface);
+my $interface = 'wlp3s0';
+push (@graphs, "wlp3s0");
+my $svrname = "darksoul.justla.me";
 
 my @values = split(/&/, $ENV{'QUERY_STRING'});
-foreach my $i (@values)
-{
+foreach my $i (@values) {
 	($varname, $mydata) = split(/=/, $i);
-	if ($varname eq 'trend')
-	{
-		$name = $mydata;
-	}
+	if ($varname eq 'trend') { $name = $mydata; }
 }
 
-if ($name eq '')
-{
-	$descr = "summary";
-}
-else
-{
-	$descr = "$name";
+if ($name eq '') { $type = "system"; $descr = ":: summary";
+} elsif ($name eq 'cpu') { $type = "cpu"; $descr = ":: details";
+} elsif ($name eq 'mem') { $type = "memory"; $descr = ":: details";
+} elsif ($name eq $interface) { $type = 'network traffic :: '; $descr = 'details';
 }
 
 print "Content-type: text/html;\n\n";
 print <<END
 <html>
 <head>
-  <TITLE>$svrname network traffic :: $descr</TITLE>
+  <TITLE>$svrname $type $descr</TITLE>
   <META HTTP-EQUIV="Refresh" CONTENT="600">
   <META HTTP-EQUIV="Cache-Control" content="no-cache">
   <META HTTP-EQUIV="Pragma" CONTENT="no-cache">
-  <style>
+   <style>
 	body { topMargin: 5; align: center; background: #000; color: #fefefe; font-family: Tahoma, Arial, Helvetica, Sans-Serif; font-size: 0.900em; font-color: #242424; }
 	a { color: #ffa200; text-decoration: none; }
 	a:hover { text-decoration: underline bold; color: #242424; }
@@ -44,22 +42,19 @@ print <<END
 	tr.main td { padding-top: 2px; padding-bottom: 2px; vertical-align: top; padding-left: 10px; padding-right: 10px; white-space: pre-line; }
 	pre { font-family: monospace; width: 100%; border: 1px dashed #454545; !important; }
 	p { text-align: center; }
-
-  </style>
+	.header { font-size: 16pt; font-weight: 900; }
+   </style>
 </head>
-
-<a href="javascript:history.go(-1)"><span class='header'>$svrname $type $descr</span></a>
+<body>
+<a href="/"><span class='header'>$svrname $type $descr</span></a>
 <br><br>
 END
 ;
 
-if ($name eq '')
-{
+if ($name eq '') {
 	print "Daily Graphs (5 minute averages and maximums)";
 	print "<br>";
-
-	foreach $graph (@graphs)
-	{
+	foreach $graph (@graphs) {
 		print "<a href='?trend=cpu'><img src='cpu-day.png' border='1'></a><br><br>";
 		print "<a href='?trend=mem'><img src='mem-day.png' border='1'></a><br><br>";
 		print "<a href='?trend=$graph'><img src='$graph-day.png' border='1'></a><br><br>";
@@ -109,4 +104,3 @@ print <<END
 </html>
 END
 ;
-
